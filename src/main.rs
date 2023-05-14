@@ -5,17 +5,21 @@ use serde_json::Value;
 async fn main() {
     let url = "https://api.hangang.msub.kr/";
 
+    // request temperature
     let response = get(url).await
         .unwrap();
 
+    // if not ok, panic
     if response.status() != StatusCode::OK {
         panic!("Error: {}", response.status());
     }
 
+    // parse into json
     let content = response.text().await.unwrap();
     let value: Value = serde_json::from_str(&content)
         .expect("JSON parsing error");
 
+    // print accordingly
     let temperature = &value["temp"]
         .as_str().unwrap()
         .parse::<f32>().unwrap();
